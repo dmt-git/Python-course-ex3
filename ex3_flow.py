@@ -7,7 +7,6 @@ from pathlib import Path
 import pandas as pd
 import json
 
-
 #Пути до файлов источников данных и базы данных
 work_dir = Path(Path.cwd(), 'work/python_course')
 http_egrul = 'https://ofdata.ru/open-data/download/egrul.json.zip'
@@ -156,21 +155,24 @@ with DAG(
     start_date=datetime(2023, 7, 27, 12),
     #schedule_interval='@daily'
 ) as dag:
-
+    # Загрузка вакансий с hh.ru по компаниям из телекома с поиском сотрудников с навыком middle+python
     hh_vacancies_task = PythonOperator(
         task_id = 'load_hh_vacancies',
         python_callable = load_api_hh_vacancies,
     )
+    # Загрузка файла со справочником ЕГРЮЛ
     download_egrul_task = BashOperator(
         task_id = 'download_egrul',
         #bash_command = f'wget {http_egrul} -O {local_egrul}', 
         bash_command = '', 
     )
+    # Парсинг из архива организаций с кодом 61
     parse_egrul_task = PythonOperator(
         task_id = 'parse_egrul',
         #python_callable = parse_egrul_json,
         python_callable = parse_egrul_empty,
-    )       
+    )  
+    # Составление топ 10 требований для вакансий с middle+python
     top10_task = PythonOperator(
         task_id = 'top10_vacancies',
         python_callable = top10_skills,
