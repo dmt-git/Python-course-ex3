@@ -149,7 +149,7 @@ def top10_skills():
 
 ###DAG construction
 with DAG(
-    dag_id='Exercise3',
+    dag_id='Exercise_3',
     default_args=default_dag_args,
     description='Using Apache Airflow for getting hh.ru vacancies and so on',
     schedule=None,
